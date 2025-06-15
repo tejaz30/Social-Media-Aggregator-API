@@ -1,0 +1,105 @@
+<!-- feed.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Feed</title>
+</head>
+<body>
+  <h1>Welcome to the Feed</h1>
+  <button onclick="logout()">Logout</button>
+
+  <h2>Create Post</h2>
+  <form id="post-form">
+    <textarea id="post-content" placeholder="Write your post..." required></textarea>
+    <button type="submit">Post</button>
+  </form>
+
+  <h2>Like a Post</h2>
+  <form id="like-form">
+    <input type="text" id="like-post-id" placeholder="Enter Post ID to like" required />
+    <button type="submit">Like</button>
+  </form>
+
+  <h2>All Posts</h2>
+  <ul id="post-list"></ul>
+
+  <p id="status"></p>
+
+  <script>
+    const apiUrl = "http://localhost:5000/api";
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "index.html"; // Redirect if not logged in
+    }
+
+    async function fetchPosts() {
+        try {
+            const res = await fetch(`${apiUrl}/posts`);
+            const posts = await res.json();
+
+            console.log("Fetched posts:", posts); // ✅ Add this
+
+            const list = document.getElementById("post-list");
+            list.innerHTML = "";
+
+            posts.forEach(post => {
+            const li = document.createElement("li");
+            const username = post.author?.username || "Unknown";
+            const authorName = post.author && post.author.username ? post.author.username : "Unknown";
+            li.innerText = `📝 ${post.content} (by ${authorName}) [${post._id}] ❤️ ${post.likes.length}`;
+
+            list.appendChild(li);
+            });
+        } catch (err) {
+            console.error("Error fetching posts:", err);
+        }
+        }
+
+
+
+    document.getElementById("post-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const content = document.getElementById("post-content").value;
+
+      const res = await fetch(`${apiUrl}/posts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ content }),
+      });
+
+      const data = await res.json();
+      document.getElementById("status").innerText = data.message;
+      fetchPosts(); // Refresh posts
+    });
+
+    document.getElementById("like-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const postId = document.getElementById("like-post-id").value;
+
+      const res = await fetch(`${apiUrl}/posts/like/${postId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      document.getElementById("status").innerText = data.message;
+      fetchPosts(); // Refresh posts
+    });
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "index.html";
+    }
+
+    fetchPosts();
+  </script>
+</body>
+</html>

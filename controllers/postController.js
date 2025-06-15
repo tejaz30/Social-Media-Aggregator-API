@@ -31,10 +31,14 @@ exports.createPost = async (req, res) => {
 
 exports.getAllPosts = async (req, res) => {
   try {
-    const posts = await Post.find().populate("author", "username").sort({ createdAt: -1 });
-    res.status(200).json(posts);
+    const posts = await Post.find()
+      .populate("author", "username")
+      .sort({ createdAt: -1 });
+
+    res.json(posts);
   } catch (err) {
-    res.status(500).json({ message: "Failed to fetch posts", error: err.message });
+    console.error("Failed to fetch posts:", err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -75,6 +79,28 @@ exports.likePost = async (req, res) => {
     return res.status(200).json({ message: "Post liked", likes: post.likes });
   } catch (error) {
     res.status(500).json({ message: "Failed to like post", error: error.message });
+  }
+};
+
+exports.getAllPostsWithMeta = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const posts = await Post.find()
+      .populate("author", "username")
+      .sort({ createdAt: -1 });
+
+    const result = posts.map((post) => ({
+      _id: post._id,
+      content: post.content,
+      author: post.author,
+      createdAt: post.createdAt,
+      likesCount: post.likes.length,
+      likedByUser: post.likes.includes(userId),
+    }));
+
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch posts", error: err.message });
   }
 };
 

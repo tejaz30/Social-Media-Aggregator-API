@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");               // Express framework for creating routes
 const connectDB = require("./config/db");        // Import DB connection
 const authRoutes = require("./routes/auth");     // Import auth routes
@@ -37,5 +38,10 @@ app.use(express.json());                         // Enable JSON request parsing
 app.use("/api/posts", postRoutes);
 app.use("/api", authRoutes);                     // Route prefix for auth APIs
 
+// Serve static files from the frontend folder (adjust path if needed)
+app.use(express.static(path.join(__dirname, "frontend")));
+
+
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT} `));
+
