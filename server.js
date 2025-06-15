@@ -1,6 +1,9 @@
 const express = require("express");               // Express framework for creating routes
 const connectDB = require("./config/db");        // Import DB connection
 const authRoutes = require("./routes/auth");     // Import auth routes
+const postRoutes = require("./routes/post");
+
+
 const cors = require("cors");                    // Allow frontend to make requests
 require("dotenv").config();                      // Load variables from .env file
 
@@ -10,7 +13,7 @@ connectDB();                                     // Connect to MongoDB
 
 app.use(cors());                                 // Enable CORS for frontend
 app.use(express.json());                         // Enable JSON request parsing
-
+app.use("/api/posts", postRoutes);
 app.use("/api", authRoutes);                     // Route prefix for auth APIs
 
 const PORT = process.env.PORT || 5000;
