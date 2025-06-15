@@ -3,11 +3,32 @@ const connectDB = require("./config/db");        // Import DB connection
 const authRoutes = require("./routes/auth");     // Import auth routes
 const postRoutes = require("./routes/post");
 
+const http = require('http');
+const socketIo = require('socket.io');
+const app = express();                           // Create an Express app
+
+
+const server = http.createServer(app); // create server for socket.io
+const io = socketIo(server, {
+  cors: {
+    origin: "*",
+  }
+});
+
+io.on("connection", (socket) => {
+  console.log("⚡ New client connected");
+
+  socket.on("disconnect", () => {
+    console.log("❌ Client disconnected");
+  });
+});
+
+app.set("io", io); // Make io available globally
+
 
 const cors = require("cors");                    // Allow frontend to make requests
 require("dotenv").config();                      // Load variables from .env file
 
-const app = express();                           // Create an Express app
 
 connectDB();                                     // Connect to MongoDB
 
@@ -17,4 +38,4 @@ app.use("/api/posts", postRoutes);
 app.use("/api", authRoutes);                     // Route prefix for auth APIs
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT} `));
+server.listen(PORT, () => console.log(`Server running on port ${PORT} `));

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Real-time Feed</title>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+  <h1>Real-Time Updates</h1>
+  <ul id="feed"></ul>
+
+  <script>
+    // Connect to your backend server
+    const socket = io("http://localhost:5000"); // Adjust port if needed
+
+    // Listen for new posts
+    socket.on("new_post", (data) => {
+      const li = document.createElement("li");
+      li.innerText = `🆕 New post: ${data.post.content}`;
+      document.getElementById("feed").appendChild(li);
+    });
+
+    // Listen for post liked
+    socket.on("post_liked", (data) => {
+      const li = document.createElement("li");
+      li.innerText = `Post Liked: ${data.postId}`;
+      document.getElementById("feed").appendChild(li);
+    });
+  </script>
+</body>
+</html>
