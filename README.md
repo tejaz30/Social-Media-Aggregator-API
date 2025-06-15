@@ -24,30 +24,7 @@ A simple **social media-style feed system** built with:
 
 ## 🛠️ Project Structure
 
-ssocial-feed-app/
-│
-├── backend/
-│   ├── models/
-│   │   └── User.js
-│   │   └── Post.js
-│   ├── controllers/
-│   │   └── userController.js
-│   │   └── postController.js
-│   ├── routes/
-│   │   └── userRoutes.js
-│   │   └── postRoutes.js
-│   ├── middleware/
-│   │   └── authMiddleware.js
-│   ├── server.js
-│   └── .env
-│
-├── frontend/
-│   └── index.html         # Login/Register
-│   └── feed.html          # Post feed UI
-│
-├── package.json
-└── README.md
-
+<pre> ## 📁 Project Structure ``` AI-SOCIAL-AGGREGATOR/ ├── 📁 config │ └── db.js # MongoDB connection ├── 📁 controllers │ ├── authController.js # Auth-related logic │ └── postController.js # Post creation and feed logic ├── 📁 frontend │ ├── feed.html # User feed (post/like UI) │ └── index.html # Login / Register page ├── 📁 middleware │ └── authMiddleware.js # JWT auth protection middleware ├── 📁 models │ ├── Post.js # Post schema │ └── User.js # User schema ├── 📁 routes │ ├── auth.js # /api/auth routes │ └── post.js # /api/posts routes ├── .env # Environment variables ├── client.html # (Possibly unused) Client file ├── token.txt # Temporary token storage (dev-only) ├── server.js # Entry point / backend server ├── README.md # Project documentation ├── package.json # Node dependencies and scripts └── package-lock.json # Dependency lock file ``` </pre>
 ---
 
 ## 🚀 Getting Started
